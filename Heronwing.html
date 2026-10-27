@@ -1,9 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Airport Check-in</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 /* Layout: terminal wayfinding sign as header, fixed setup + run controls, the check-in hall as a wide band, two charts beneath. */
 :root {
@@ -11,8 +7,8 @@
   --sign: #17191C; --sign-text: #F4B400;
   --cust: #2F5F94; --serve: #D08F00; --gone: #9AA3AB; --officer: #24364D; --metal: #8A949C;
   --floor: #E2E5E3; --floor2: #D3D8D5; --mean: #C2410C; --point: #2F5F94; --util: #8A5A00; --brand: #0F5C63; --brand-hi: #9FE0D6;
-  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
-  --f-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-num: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121417; --panel: #1B1E22; --ink: #E8EAEC; --muted: #9BA3AA; --line: #30353B;
@@ -321,7 +317,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     g.strokeStyle = C.floor2; g.lineWidth = 1;
     for (let x = 0; x < LW + 60; x += 50) { g.beginPath(); g.moveTo(x, WALL_Y); g.lineTo(x - 36, LH); g.stroke(); }
     // labels
-    g.fillStyle = C.muted; g.font = '600 13px Archivo, sans-serif'; g.textBaseline = 'alphabetic';
+    g.fillStyle = C.muted; g.font = '600 13px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textBaseline = 'alphabetic';
     g.textAlign = 'left'; g.fillText('ENTRANCE  →', 12, 26);
     g.textAlign = 'right'; g.fillText('TO SECURITY  →', LW - 12, 112);
     // airline banner over the desks (fictional carrier)
@@ -330,10 +326,10 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     g.moveTo(602, 34); g.quadraticCurveTo(612, 14, 642, 11); g.lineTo(630, 21); g.quadraticCurveTo(620, 26, 602, 34); g.fill();
     g.globalAlpha = 0.6; g.beginPath();
     g.moveTo(612, 34); g.quadraticCurveTo(624, 22, 648, 20); g.lineTo(638, 27); g.quadraticCurveTo(628, 30, 612, 34); g.fill(); g.globalAlpha = 1;
-    g.fillStyle = '#FFFFFF'; g.font = '800 18px Archivo, sans-serif'; g.textAlign = 'left';
+    g.fillStyle = '#FFFFFF'; g.font = '800 18px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textAlign = 'left';
     if ('letterSpacing' in g) g.letterSpacing = '3px';
     g.fillText('HERONWING', 656, 31);
-    g.fillStyle = C['brand-hi']; g.font = '600 12px Archivo, sans-serif'; g.textAlign = 'right';
+    g.fillStyle = C['brand-hi']; g.font = '600 12px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textAlign = 'right';
     if ('letterSpacing' in g) g.letterSpacing = '2px';
     g.fillText('AIRLINES · CHECK-IN', 980, 29);
     if ('letterSpacing' in g) g.letterSpacing = '0px';
@@ -342,7 +338,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     DESK_X.forEach((x, i) => {
       const open = i < 2, srv = open ? servers[i] : null, busy = srv && srv.cust;
       g.fillStyle = C.sign; g.beginPath(); g.roundRect(x - 54, 50, 108, 30, 4); g.fill();
-      g.textAlign = 'center'; g.font = '800 15px Archivo, sans-serif';
+      g.textAlign = 'center'; g.font = '800 15px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
       g.fillStyle = open ? C['sign-text'] : C.metal;
       g.fillText(open ? 'DESK ' + (i + 1) : 'CLOSED', x - (open ? 7 : 0), 71);
       if (open) { // status lamp: lit while serving
@@ -402,7 +398,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     const hidden = queue.length - (MAX_J + 1);
     if (hidden > 0) {
       g.fillStyle = C.mean; g.beginPath(); g.roundRect(8, 120, 150, 26, 4); g.fill();
-      g.fillStyle = C.panel; g.font = '700 13px Archivo, sans-serif'; g.textAlign = 'left';
+      g.fillStyle = C.panel; g.font = '700 13px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textAlign = 'left';
       g.fillText('+' + hidden + ' more in line', 18, 138);
     }
   }
@@ -420,7 +416,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     const pl = 56, pr = 14, pt = 10, pb = 40, iw = w - pl - pr, ih = h - pt - pb;
     const xmax = Math.max(30, Math.ceil(t / 6) * 6), xs = nice(xmax / 6);
     const X = v => pl + v / xmax * iw, Y = v => pt + ih - v / ymax * ih;
-    g.font = '12px "IBM Plex Mono", monospace'; g.lineWidth = 1;
+    g.font = '12px ui-monospace, Menlo, Consolas, monospace'; g.lineWidth = 1;
     g.textAlign = 'right'; g.textBaseline = 'middle';
     for (let v = 0; v <= ymax + 1e-9; v += ys) {
       g.strokeStyle = C.line; g.beginPath(); g.moveTo(pl, Y(v)); g.lineTo(pl + iw, Y(v)); g.stroke();
@@ -432,7 +428,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
       g.fillStyle = C.muted; g.fillText(fmt(v), X(v), pt + ih + 8);
     }
     g.strokeStyle = C.muted; g.beginPath(); g.moveTo(pl, pt); g.lineTo(pl, pt + ih); g.lineTo(pl + iw, pt + ih); g.stroke();
-    g.font = '600 12px Archivo, sans-serif'; g.fillStyle = C.muted;
+    g.font = '600 12px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.fillStyle = C.muted;
     g.fillText('Simulation time (minutes)', pl + iw / 2, h - 16);
     g.save(); g.translate(13, pt + ih / 2); g.rotate(-Math.PI / 2); g.textBaseline = 'middle';
     g.fillText(ylabel, 0, 0); g.restore();
@@ -522,5 +518,3 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
   requestAnimationFrame(frame);
 })();
 </script>
-
-</body></html>
