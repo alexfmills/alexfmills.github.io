@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Airport Check-in</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -118,8 +119,8 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
       <div class="stat"><span>In line now</span><b id="sQ">0</b></div>
       <div class="stat"><span>Agents busy</span><b id="sBusy">0 of 2</b></div>
       <div class="stat"><span>Checked in</span><b id="sN">0</b></div>
-      <div class="stat key"><span>Mean wait (min)</span><b id="sMean">–</b></div>
-      <div class="stat keyu"><span>Mean utilization</span><b id="sUtil">–</b></div>
+      <div class="stat key"><span>Mean wait (min)</span><b id="sMean">&ndash;</b></div>
+      <div class="stat keyu"><span>Mean utilization</span><b id="sUtil">&ndash;</b></div>
     </div>
   </section>
 
@@ -318,8 +319,8 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     for (let x = 0; x < LW + 60; x += 50) { g.beginPath(); g.moveTo(x, WALL_Y); g.lineTo(x - 36, LH); g.stroke(); }
     // labels
     g.fillStyle = C.muted; g.font = '600 13px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textBaseline = 'alphabetic';
-    g.textAlign = 'left'; g.fillText('ENTRANCE  →', 12, 26);
-    g.textAlign = 'right'; g.fillText('TO SECURITY  →', LW - 12, 112);
+    g.textAlign = 'left'; g.fillText('ENTRANCE  \u2192', 12, 26);
+    g.textAlign = 'right'; g.fillText('TO SECURITY  \u2192', LW - 12, 112);
     // airline banner over the desks (fictional carrier)
     g.fillStyle = C.brand; g.beginPath(); g.roundRect(586, 6, 408, 36, 4); g.fill();
     g.fillStyle = C['brand-hi']; g.beginPath(); // swept wing mark
@@ -331,7 +332,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     g.fillText('HERONWING', 656, 31);
     g.fillStyle = C['brand-hi']; g.font = '600 12px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; g.textAlign = 'right';
     if ('letterSpacing' in g) g.letterSpacing = '2px';
-    g.fillText('AIRLINES · CHECK-IN', 980, 29);
+    g.fillText('AIRLINES \u00B7 CHECK-IN', 980, 29);
     if ('letterSpacing' in g) g.letterSpacing = '0px';
 
     // desks: overhead sign, agent, counter
@@ -492,8 +493,8 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); ou
     $('sQ').textContent = queue.length;
     $('sBusy').textContent = busyCount() + ' of 2';
     $('sN').textContent = served;
-    $('sMean').textContent = waits.length ? (sumW / waits.length).toFixed(2) : '–';
-    $('sUtil').textContent = t > 0 ? (busyTotal / (2 * t) * 100).toFixed(1) + '%' : '–';
+    $('sMean').textContent = waits.length ? (sumW / waits.length).toFixed(2) : '\u2013';
+    $('sUtil').textContent = t > 0 ? (busyTotal / (2 * t) * 100).toFixed(1) + '%' : '\u2013';
   }
   $('start').addEventListener('click', toggle);
   $('jump').addEventListener('click', jump);
