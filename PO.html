@@ -69,6 +69,7 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
   font-size: 16px; font-weight: 700; color: var(--xl-blue);
 }
 .status { font-family: var(--f-geneva); font-size: 13.33px; border-top: 2px solid var(--ink); }
+.status.prompt { background: #ffff00; color: var(--ink); font-weight: 700; }
 .status.bad { background: var(--warn-fill); color: var(--warn-ink); font-weight: 700; font-style: italic; }
 
 /* Input cells */
@@ -82,8 +83,25 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
   font: 700 12px/1 var(--f-cell); color: var(--ink); text-align: center;
   padding: 0 2px; cursor: cell;
 }
+/* Inputs edited away from their defaults get a stronger shade, so a reset is visible */
+.in.changed { background: #ffcc66; }
 .in:focus-within { outline: 2px solid var(--select); outline-offset: -1px; z-index: 2; }
 .in input::selection { background: #b5d5ff; }
+
+/* Color key above the sheet (same zoom as the sheet so it lines up) */
+.key {
+  --z: 1; zoom: var(--z);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
+  width: 619px; max-width: calc(100vw / var(--z) - 32px / var(--z)); box-sizing: border-box;
+  margin: 0 0 8px 16px; font: 12px/1.3 var(--f-cell);
+}
+@media (min-width: 820px) { .key { --z: 1.25; } }
+@media (min-width: 1000px) { .key { --z: 1.5; } }
+.key .item { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.key .sw { width: 22px; height: 13px; border: 1px solid var(--ink); flex: none; }
+.key .note-reset { flex-basis: 100%; }
+.key-title { flex-basis: 100%; margin: 0 0 4px; font: 700 20px/1.2 var(--f-cell); color: var(--ink); }
+.key > b { margin-right: -8px; }
 
 /* Reset button */
 #reset {
@@ -119,6 +137,15 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
 .has-note:focus { outline: 2px solid var(--select); outline-offset: -1px; }
 </style>
 
+<div class="key" aria-label="Color key">
+  <h1 class="key-title">Queue Calculator</h1>
+  <b>Key:</b>
+  <span class="item"><span class="sw" style="background:var(--input-fill)"></span>Input (you can change it)</span>
+  <span class="item"><span class="sw" style="background:#ffcc66"></span>Input changed by you</span>
+  <span class="item"><span class="sw" style="background:#fff"></span>Calculated value</span>
+  <span class="note-reset"><b>↺ Reset</b> returns the calculator to its original values.</span>
+</div>
+
 <div class="scroller">
 <div class="sheet" id="sheet">
 
@@ -129,11 +156,13 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
   <!-- Basic inputs -->
   <div class="c sec l" style="grid-row:4;grid-column:2/7">Basic Inputs:</div>
   <div class="c r" style="grid-row:4;grid-column:2/8">Number of Servers, c =</div>
-  <div class="c in bt bl br" style="grid-row:4;grid-column:8"><input id="H4" value="1" inputmode="decimal" aria-label="Number of servers, c"></div>
+  <div class="c in bt bl br" style="grid-row:4;grid-column:8"><input id="H4" value="" autofocus inputmode="decimal" aria-label="Number of servers, c"></div>
   <div class="c r" style="grid-row:5;grid-column:2/8"><span>Arrival Rate, R<sub>i</sub> =</span></div>
   <div class="c in bl br" style="grid-row:5;grid-column:8"><input id="H5" value="34" inputmode="decimal" aria-label="Arrival rate, Ri"></div>
+  <div class="c l" style="grid-row:5;grid-column:9/11">per hour</div>
   <div class="c r" style="grid-row:6;grid-column:2/8"><span>Service Rate Capacity of each server, R<sub>p</sub> =</span></div>
   <div class="c in bl br bb" style="grid-row:6;grid-column:8"><input id="H6" value="12" inputmode="decimal" aria-label="Service rate capacity of each server, Rp"></div>
+  <div class="c l" style="grid-row:6;grid-column:9/11">per hour</div>
   <div class="c" style="grid-row:4/7;grid-column:3;padding:3px 4px 3px 0;align-items:stretch;z-index:1"><button id="reset" type="button" title="Restore all inputs to their original values">↺ Reset</button></div>
 
   <!-- Waiting line -->
@@ -301,7 +330,7 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
     let status;
     try {
       const c = n(V.H4), ri = n(V.H5), rp = n(V.H6);
-      status = ri > c * rp ? 'Warning: Arrival rate exceeds service capacity. Model is not valid.' : 'Model is OK';
+      status = V.H4 === null ? 'Enter the number of servers' : ri > c * rp ? 'Warning: Arrival rate exceeds service capacity. Model is not valid.' : 'Model is OK';
     } catch (e) { status = e.code; }
 
     calc('H11', () => div(n(V.H5), n(V.H4) * n(V.H6)));
@@ -340,17 +369,26 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
     // Render
     const b2 = $('B2');
     b2.textContent = status;
-    b2.classList.toggle('bad', status !== 'Model is OK');
+    b2.classList.toggle('bad', status !== 'Model is OK' && status !== 'Enter the number of servers');
+    b2.classList.toggle('prompt', status === 'Enter the number of servers');
     Object.keys(cellFmt).forEach(id => {
       const v = V[id];
       $(id).textContent = v instanceof XErr ? v.code : cellFmt[id](v);
     });
   }
 
+  // Shade any input whose value differs from its original (default) value
+  function markChanged() {
+    INPUTS.forEach(id => {
+      const el = $(id);
+      el.parentElement.classList.toggle('changed', parse(el.value) !== parse(el.defaultValue));
+    });
+  }
+
   // ---- Input behaviour: select on entry, Enter/arrows move like Excel, tidy display on commit ----
   INPUTS.forEach((id, i) => {
     const el = $(id);
-    el.addEventListener('input', recalc);
+    el.addEventListener('input', () => { recalc(); markChanged(); });
     el.addEventListener('focus', () => setTimeout(() => el.select(), 0));
     el.addEventListener('blur', () => {
       const v = parse(el.value);
@@ -374,7 +412,9 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
   // Reset: restore every input to the value written in the page's markup
   $('reset').addEventListener('click', () => {
     INPUTS.forEach(id => { $(id).value = $(id).defaultValue; });
+    markChanged();
     recalc();
+    $('H4').focus();
   });
 
   // Notes: tap toggles on touch devices
@@ -383,6 +423,7 @@ sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
   });
 
   recalc();
+  $('H4').focus();
 })();
 </script>
 
