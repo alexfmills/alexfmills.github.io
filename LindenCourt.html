@@ -1,0 +1,457 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Linden Court Closing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Libre+Caslon+Text:wght@400;700&family=Archivo:ital,wght@0,500;0,800;1,800;1,900&family=Cormorant+Garamond:wght@500;700&family=Syne:wght@500;700;800&display=swap">
+<style>
+/* Layout: an email client window. Message header, a long scrolling letter, an attachment tray, and one attachment viewer at a time. */
+:root{
+  --bg:#e9ecef; --window:#ffffff; --chrome:#f4f6f8; --ink:#1d2329; --muted:#5d6873; --line:#d8dde2;
+  --accent:#1f5f8b; --accent-soft:#e3eef6; --chip:#f7f9fa; --step:#2b6a52; --step-soft:#e5f1eb;
+  --ui:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --letter:"Source Serif 4",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161a; --window:#1b2026; --chrome:#20262d; --ink:#e4e8ec; --muted:#9aa6b1; --line:#323a43;
+  --accent:#7db6dc; --accent-soft:#1f3242; --chip:#232a31; --step:#7cc5a4; --step-soft:#1d3029; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161a; --window:#1b2026; --chrome:#20262d; --ink:#e4e8ec; --muted:#9aa6b1; --line:#323a43;
+  --accent:#7db6dc; --accent-soft:#1f3242; --chip:#232a31; --step:#7cc5a4; --step-soft:#1d3029; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 60px}
+.window{max-width:860px;margin:0 auto;background:var(--window);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 40px rgba(20,30,40,.08)}
+.toolbar{display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--chrome);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.toolbar .folder{font-weight:600;color:var(--ink)}
+.toolbar .sp{flex:1}
+.tb-btn{border:1px solid var(--line);background:var(--window);color:var(--muted);border-radius:6px;padding:4px 10px;font:inherit;font-size:12px}
+
+.head{padding:22px 28px 18px;border-bottom:1px solid var(--line)}
+.subject{font-size:clamp(20px,3.4vw,26px);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0 0 14px}
+.from{display:flex;gap:12px;align-items:flex-start}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--window);display:grid;place-items:center;font-weight:700;flex:none}
+.meta{min-width:0;flex:1;font-size:13.5px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:600}
+.meta .row{display:flex;flex-wrap:wrap;gap:4px 10px}
+.date{font-size:13px;color:var(--muted);white-space:nowrap}
+.clip{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+
+.letter{font-family:var(--letter);font-size:17px;line-height:1.7;padding:30px 28px 10px;max-width:68ch}
+.letter p{margin:0 0 1.1em}
+.letter h2{font-family:var(--ui);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2.2em 0 1em;font-weight:600}
+
+.steps{list-style:none;margin:0 0 1.6em;padding:0;display:grid;gap:18px;counter-reset:s}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.num{width:44px;height:44px;border-radius:50%;border:2px solid var(--step);color:var(--step);display:grid;place-items:center;font-family:var(--ui);font-weight:700;font-size:17px}
+.step-body{min-width:0;border-bottom:1px dashed var(--line);padding-bottom:18px}
+.step:last-child .step-body{border-bottom:0}
+.step h3{font-family:var(--ui);font-size:17px;margin:8px 0 6px;font-weight:700}
+.step p{margin:0 0 .6em}
+.facts{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--ui);font-size:13px}
+.fact{background:var(--step-soft);color:var(--step);padding:3px 10px;border-radius:999px;font-weight:600}
+.fact.wait{background:var(--chip);color:var(--muted);border:1px solid var(--line);font-weight:500}
+.inline-att{font-family:var(--ui);font-size:14px;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+.sig{font-family:var(--letter);padding:0 0 20px;font-size:16px;line-height:1.5}
+.sig .name{font-weight:600}
+.sig .firm{font-family:var(--ui);font-size:13px;color:var(--muted)}
+
+.tray{border-top:1px solid var(--line);background:var(--chrome);padding:20px 28px 26px}
+.tray-h{font-size:13px;line-height:1.4;font-weight:600;color:var(--muted);margin:0 0 4px}
+.tray-note{font-size:13px;color:var(--muted);margin:0 0 14px}
+.atts{margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.att{display:flex;gap:12px;align-items:center;text-align:left;background:var(--window);border:1px solid var(--line);border-radius:8px;padding:12px;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s, transform .15s}
+.att:hover{border-color:var(--accent);transform:translateY(-1px)}
+.clip:focus-visible,.vbody:focus-visible,.att:focus-visible,.inline-att:focus-visible,.close:focus-visible,.vtab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.att.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.pdf{width:38px;height:46px;flex:none;border-radius:4px;background:#c8372d;color:#fff;font-size:10px;font-weight:700;display:grid;place-items:end center;padding-bottom:6px;position:relative}
+.pdf::before{content:"";position:absolute;top:0;right:0;border-style:solid;border-width:0 10px 10px 0;border-color:transparent var(--window) rgba(0,0,0,.25) transparent}
+.att .fn{font-size:13.5px;font-weight:600;word-break:break-word;line-height:1.3}
+.att .sz{font-size:12px;color:var(--muted)}
+.att .seen{font-size:11px;color:var(--step);font-weight:600}
+
+/* Viewer */
+.viewer{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  padding:max(14px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));
+  background:rgba(12,18,24,.62)}
+.vbox{width:min(640px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--window);border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:pop .18s ease-out}
+@keyframes pop{from{transform:translateY(8px) scale(.98);opacity:.6}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.vbox{animation:none}.att{transition:none}}
+.vbar{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;background:var(--chrome);border-bottom:1px solid var(--line)}
+.vtitle{margin:0;flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.close{display:inline-flex;align-items:center;gap:6px;background:#c8372d;color:#fff;border:0;border-radius:6px;padding:8px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.close:hover{background:#a92c23}
+.close svg{width:14px;height:14px}
+.vtabs{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--window)}
+.vtab{flex:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--chip);color:var(--muted);padding:4px 10px;border-radius:999px;cursor:pointer}
+.vtab[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--window);font-weight:600}
+.vbody{overflow:auto;padding:18px;background:#8a929a}
+
+/* ---- Ads: printed pieces, fixed look in both themes ---- */
+.ad{border-radius:4px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.ad .terms{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.ad .term{padding:16px 18px}
+.ad .tlab{font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.ad .tval{font-variant-numeric:tabular-nums;line-height:1.05;margin-top:4px}
+.ad .tsub{font-size:12px;margin-top:4px}
+.ad .fine{font-size:10.5px;line-height:1.45;padding:12px 18px}
+
+/* Lender A */
+.hearth{background:#f6f1e4;color:#18304a;font-family:"Libre Caslon Text",Georgia,serif}
+.hearth .top{background:#18304a;color:#f6f1e4;padding:26px 24px 22px;text-align:center;position:relative}
+.hearth .mark{width:54px;height:54px;margin:0 auto 10px}
+.hearth .brand{font-size:24px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.hearth .since{font-size:11px;letter-spacing:.3em;text-transform:uppercase;opacity:.75;margin-top:4px}
+.hearth .pitch{padding:24px 26px 6px;text-align:center}
+.hearth .pitch h3{font-size:26px;line-height:1.2;margin:0 0 10px;font-weight:400;font-style:italic;text-wrap:balance}
+.hearth .pitch p{font-size:14px;margin:0;color:#3d5168}
+.hearth .terms{margin:20px 22px;border:1.5px solid #18304a}
+.hearth .term + .term{border-left:1.5px solid #18304a}
+.hearth .tlab{color:#7a5a1e;font-family:"Public Sans",sans-serif;font-weight:600}
+.hearth .tval{font-size:36px;font-weight:700}
+.hearth .tsub{color:#3d5168}
+.hearth .fine{color:#5c6b7b;border-top:1px solid #d9cfb8}
+.hearth .rec{display:inline-block;margin-top:12px;background:#b8902f;color:#18304a;font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+
+/* Lender B */
+.swift{background:#111214;color:#fff;font-family:"Archivo",sans-serif}
+.swift .top{padding:22px 22px 0;display:flex;align-items:center;gap:10px}
+.swift .brand{font-weight:900;font-style:italic;font-size:22px;letter-spacing:-.02em}
+.swift .brand span{color:#ff6a1a}
+.swift .hero{padding:18px 22px 22px;position:relative;overflow:hidden}
+.swift .hero::after{content:"";position:absolute;right:-40px;top:10px;width:260px;height:140px;background:repeating-linear-gradient(-20deg,#ff6a1a 0 10px,transparent 10px 22px);opacity:.22;transform:skewX(-20deg)}
+.swift h3{font-size:clamp(34px,7vw,50px);font-weight:900;font-style:italic;line-height:.95;margin:0;letter-spacing:-.03em;text-transform:uppercase;position:relative;z-index:1}
+.swift h3 em{color:#ff6a1a;font-style:italic}
+.swift .hero p{margin:12px 0 0;font-size:14px;color:#c9ccd1;max-width:36ch;position:relative;z-index:1}
+.swift .terms{background:#ff6a1a;color:#111214}
+.swift .term + .term{border-left:2px solid #111214}
+.swift .tlab{font-weight:800}
+.swift .tval{font-size:40px;font-weight:900;font-style:italic}
+.swift .tsub{font-weight:500}
+.swift .fine{color:#8d929a}
+.swift .alt{display:inline-block;margin-left:auto;border:1.5px solid #fff;font-size:10px;font-weight:800;letter-spacing:.12em;padding:3px 8px;text-transform:uppercase}
+
+/* Title A */
+.corner{background:#fbf8f3;color:#3b1d22;font-family:"Cormorant Garamond",Georgia,serif;border:10px solid #fbf8f3;outline:2px solid #6e2430;outline-offset:-6px}
+.corner .top{text-align:center;padding:24px 20px 6px}
+.corner .crest{width:60px;height:60px;margin:0 auto 6px}
+.corner .brand{font-size:28px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+.corner .brand small{display:block;font-size:15px;letter-spacing:.32em;font-weight:500;margin-top:4px}
+.corner .rule{height:1px;background:#6e2430;margin:14px 50px;position:relative}
+.corner .rule::after{content:"◆";content:"◆" / "";position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);background:#fbf8f3;padding:0 8px;color:#6e2430;font-size:11px}
+.corner .pitch{text-align:center;padding:4px 28px 4px}
+.corner .pitch h3{font-size:27px;font-weight:500;font-style:italic;margin:0 0 8px;line-height:1.2;text-wrap:balance}
+.corner .pitch p{font-size:17px;margin:0;color:#5e3a40}
+.corner .terms{margin:18px 20px 8px;background:#6e2430;color:#fbf8f3}
+.corner .term + .term{border-left:1px solid rgba(251,248,243,.35)}
+.corner .tlab{font-family:"Public Sans",sans-serif;font-weight:600;opacity:.85}
+.corner .tval{font-size:38px;font-weight:700}
+.corner .tsub{font-size:14px;opacity:.85}
+.corner .fine{color:#7a5a5e;text-align:center;font-size:12px}
+.corner .rec{display:inline-block;margin-top:10px;border:1px solid #6e2430;color:#6e2430;font-family:"Public Sans",sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px}
+
+/* Title B */
+.clear{background:#e6f6f4;color:#063b3a;font-family:"Syne","Public Sans",sans-serif;position:relative}
+.clear .top{display:flex;align-items:center;gap:10px;padding:20px 22px}
+.clear .logo{width:34px;height:34px}
+.clear .brand{font-weight:800;font-size:20px;letter-spacing:-.01em}
+.clear .alt{margin-left:auto;background:#063b3a;color:#e6f6f4;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.clear .hero{padding:0 22px 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end}
+.clear h3{font-size:clamp(30px,6vw,42px);font-weight:800;line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.clear h3 span{background:#16c2b0;padding:0 .12em;border-radius:6px}
+.clear .hero p{grid-column:1/-1;margin:0;font-family:"Public Sans",sans-serif;font-size:14px;color:#2b5d5b}
+.clear .badge{width:92px;height:92px;border-radius:50%;background:#16c2b0;color:#063b3a;display:grid;place-items:center;text-align:center;font-weight:800;font-size:12px;line-height:1.1;transform:rotate(-10deg)}
+.clear .badge b{display:block;font-size:30px}
+.clear .terms{margin:0 16px 4px;gap:10px}
+.clear .term{background:#fff;border-radius:12px}
+.clear .tlab{color:#16857a;font-weight:700}
+.clear .tval{font-size:36px;font-weight:800}
+.clear .tsub{font-family:"Public Sans",sans-serif;color:#2b5d5b}
+.clear .fine{font-family:"Public Sans",sans-serif;color:#4c7472}
+
+@media (max-width:520px){
+  .head,.letter,.tray{padding-left:18px;padding-right:18px}
+  .letter{font-size:16px}
+  .ad .terms{grid-template-columns:1fr}
+  .hearth .term + .term,.swift .term + .term,.corner .term + .term{border-left:0;border-top:1.5px solid currentColor}
+  .vbody{padding:10px}
+  .toolbar .tb-btn{display:none}
+}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+</style>
+
+<div class="window" id="window">
+  <div class="toolbar" aria-hidden="true">
+    <span class="folder">Inbox</span><span>›</span><span>Purchase — 48 Linden Court</span>
+    <span class="sp"></span>
+    <span class="tb-btn">Reply</span><span class="tb-btn">Forward</span>
+  </div>
+
+  <header class="head">
+    <h1 class="subject">Next steps to closing on 48 Linden Court</h1>
+    <div class="from">
+      <div class="avatar" aria-hidden="true">DW</div>
+      <div class="meta">
+        <div class="row"><span class="sr-only">From:</span><b>Dana Whitfield</b><span>&lt;dana.whitfield@harborlinerealty.com&gt;</span></div>
+        <div class="row"><span>To: Jordan Reyes</span><span>Cc: Margaret Okafor, Esq.</span></div>
+        <a class="clip" href="#attachments"><span aria-hidden="true">📎</span> 4 attachments<span class="sr-only"> (jump to attachments)</span></a>
+      </div>
+      <div class="date"><span class="sr-only">Sent: </span>Mon, 9:14 AM</div>
+    </div>
+  </header>
+
+  <article class="letter" aria-label="Message">
+    <p>Hi Jordan,</p>
+    <p>Congratulations again. The seller signed the purchase agreement late Friday, so 48 Linden Court is officially under contract. Now the real work starts. I've laid out every step between today and closing day below so you know what is happening, who is handling it, and what has to wait on what.</p>
+
+    <h2>The five steps to closing</h2>
+    <ol class="steps">
+      <li class="step">
+        <div class="num" aria-hidden="true">1</div>
+        <div class="step-body">
+          <h3><span class="sr-only">Step 1: </span>Legal review of the contract</h3>
+          <p>Margaret Okafor at Okafor &amp; Lindqvist LLP will go through the purchase agreement line by line: contingencies, deadlines, inspection terms and anything the seller's attorney slipped in. Her review takes <strong>3 business days</strong>. Nothing else can move until she signs off, since lenders and title companies both need the final, attorney-approved contract.</p>
+          <div class="facts"><span class="fact wait">Starts right away</span></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="num" aria-hidden="true">2</div>
+        <div class="step-body">
+          <h3><span class="sr-only">Step 2: </span>Mortgage application</h3>
+          <p>Once Margaret approves the contract, you'll submit your full mortgage application. The lender handles underwriting, the appraisal and the final loan commitment. How long this takes, and what it costs you in fees, depends on which lender you choose. I've attached my recommended lender, <button type="button" class="inline-att" data-open="hearth" aria-haspopup="dialog">Hearthside Community Lending<span class="sr-only"> (opens attachment)</span></button>, along with a second option, <button type="button" class="inline-att" data-open="swift" aria-haspopup="dialog">SwiftPath Mortgage<span class="sr-only"> (opens attachment)</span></button>.</p>
+          <div class="facts"><span class="fact wait">Starts after step 1</span></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="num" aria-hidden="true">3</div>
+        <div class="step-body">
+          <h3><span class="sr-only">Step 3: </span>Title search and title insurance</h3>
+          <p>A title company searches the public records to make sure the seller truly owns the house free and clear (no liens, unpaid taxes or ownership disputes) and then issues a title insurance policy. This also can't start until the legal review is done. My usual title company is <button type="button" class="inline-att" data-open="corner" aria-haspopup="dialog">Cornerstone Title &amp; Abstract<span class="sr-only"> (opens attachment)</span></button>. I've also attached <button type="button" class="inline-att" data-open="clear" aria-haspopup="dialog">ClearDeed Express Title<span class="sr-only"> (opens attachment)</span></button> as an alternative.</p>
+          <div class="facts"><span class="fact wait">Starts after step 1</span></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="num" aria-hidden="true">4</div>
+        <div class="step-body">
+          <h3><span class="sr-only">Step 4: </span>Escrow funding</h3>
+          <p>When your lender issues the loan commitment, the loan funds and your down payment are wired into the escrow account, which takes <strong>3 business days</strong>.</p>
+          <div class="facts"><span class="fact wait">Starts after step 2</span></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="num" aria-hidden="true">5</div>
+        <div class="step-body">
+          <h3><span class="sr-only">Step 5: </span>Final legal clearance to close</h3>
+          <p>Margaret does a last check that everything is in place and clears us for the closing table, which takes <strong>2 business days</strong>. She needs <em>both</em> the title insurance policy and a fully funded escrow account in hand before she can begin.</p>
+          <div class="facts"><span class="fact wait">Starts after steps 3 and 4</span></div>
+        </div>
+      </li>
+    </ol>
+
+    <h2>About the vendor choices</h2>
+    <p>I've worked with Hearthside and Cornerstone for years. They are reliable and reasonably priced, and they're my recommendations for most buyers. The alternatives, SwiftPath and ClearDeed, are faster but charge more for the speed. Whether the extra cost is worth it depends on the closing date we end up negotiating with the seller, so take a look at all four attachments and keep them handy.</p>
+    <p>Margaret is copied here and will reach out today to get the legal review started. Call me any time with questions.</p>
+    <p>Talk soon,</p>
+
+    <div class="sig">
+      <div class="name">Dana Whitfield</div>
+      <div class="firm">Licensed Real Estate Salesperson<span aria-hidden="true"> · </span><span class="sr-only">, </span>Harborline Realty<br>(555) 014-2291</div>
+    </div>
+  </article>
+
+  <section class="tray" id="attachments" aria-labelledby="tray-h" tabindex="-1">
+    <h2 class="tray-h" id="tray-h">4 attachments</h2>
+    <p class="tray-note">Select an attachment to open it.</p>
+    <ul class="atts" id="atts" role="list"></ul>
+  </section>
+</div>
+
+<div class="viewer" id="viewer" hidden>
+  <div class="vbox" id="vbox" role="dialog" aria-modal="true" aria-labelledby="vtitle">
+    <div class="vbar">
+      <h2 class="vtitle" id="vtitle"></h2>
+      <button class="close" id="close" type="button" aria-label="Close attachment">
+        <svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>
+        Close
+      </button>
+    </div>
+    <div class="vtabs" id="vtabs" role="group" aria-label="Switch to another attachment"></div>
+    <div class="vbody" id="vbody" tabindex="0" role="document" aria-label="Attachment contents"></div>
+  </div>
+</div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+
+<template id="t-hearth">
+  <div class="ad hearth">
+    <div class="top">
+      <svg class="mark" viewBox="0 0 54 54" aria-hidden="true" focusable="false"><path d="M8 26 L27 9 L46 26" fill="none" stroke="#b8902f" stroke-width="2.5" stroke-linejoin="round"/><path d="M13 22 V46 H41 V22" fill="none" stroke="#b8902f" stroke-width="2.5"/><path d="M22 46 V36 C22 32 32 32 32 36 V46" fill="none" stroke="#b8902f" stroke-width="2"/><path d="M27 31 C24.5 28 26 26 27 24 C28 26 29.5 28 27 31 Z" fill="#b8902f"/></svg>
+      <div class="brand">Hearthside</div>
+      <div class="since">Community Lending<span aria-hidden="true"> · </span><span class="sr-only">, </span>Est. 1962</div>
+    </div>
+    <div class="pitch">
+      <h3>The neighborhood lender that does it right the first time.</h3>
+      <p>Local underwriters, a dedicated loan officer, and no surprises at the closing table.</p>
+    </div>
+    <div class="terms">
+      <div class="term"><div class="tlab">Turnaround</div><div class="tval">14 days</div><div class="tsub">business days, application to loan commitment</div></div>
+      <div class="term"><div class="tlab">Total fees</div><div class="tval">$2,400</div><div class="tsub">origination &amp; processing, flat</div></div>
+    </div>
+    <div class="fine">Turnaround begins on receipt of a complete application with an attorney-approved purchase contract. Fee includes appraisal coordination and underwriting. Equal Housing Lender. NMLS #440912.</div>
+  </div>
+</template>
+
+<template id="t-swift">
+  <div class="ad swift">
+    <div class="top"><div class="brand">Swift<span>Path</span></div></div>
+    <div class="hero">
+      <h3>Keys <em>faster.</em><br>Close sooner.</h3>
+      <p>Priority underwriting, a dedicated closing team, and real-time loan tracking on your phone.</p>
+    </div>
+    <div class="terms">
+      <div class="term"><div class="tlab">Express turnaround</div><div class="tval">8 days</div><div class="tsub">business days, application to commitment</div></div>
+      <div class="term"><div class="tlab">Total fees</div><div class="tval">$4,700</div><div class="tsub">includes priority underwriting surcharge</div></div>
+    </div>
+    <div class="fine">SwiftPath Mortgage LLC. Express turnaround requires a complete application and an attorney-approved purchase contract. Fees are non-refundable once underwriting begins. NMLS #2287415.</div>
+  </div>
+</template>
+
+<template id="t-corner">
+  <div class="ad corner">
+    <div class="top">
+      <svg class="crest" viewBox="0 0 60 60" aria-hidden="true" focusable="false"><path d="M30 4 L54 14 V30 C54 44 43 53 30 57 C17 53 6 44 6 30 V14 Z" fill="none" stroke="#6e2430" stroke-width="2"/><rect x="20" y="20" width="20" height="22" fill="none" stroke="#6e2430" stroke-width="1.6"/><path d="M23 26 H37 M23 31 H37 M23 36 H32" stroke="#6e2430" stroke-width="1.3"/></svg>
+      <div class="brand">Cornerstone<small>Title &amp; Abstract</small></div>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <div class="pitch">
+      <h3>Every deed traced. Every lien found.</h3>
+      <p>A complete chain-of-title search and an owner's policy you can rely on for as long as you own your home.</p>
+    </div>
+    <div class="terms">
+      <div class="term"><div class="tlab">Turnaround</div><div class="tval">10 days</div><div class="tsub">business days, search through issued policy</div></div>
+      <div class="term"><div class="tlab">Total cost</div><div class="tval">$1,800</div><div class="tsub">search fee &amp; owner's policy premium</div></div>
+    </div>
+    <div class="fine">Search begins upon receipt of the attorney-approved contract of sale. Serving buyers, sellers and attorneys since 1948.</div>
+  </div>
+</template>
+
+<template id="t-clear">
+  <div class="ad clear">
+    <div class="top">
+      <svg class="logo" viewBox="0 0 34 34" aria-hidden="true" focusable="false"><rect x="2" y="2" width="30" height="30" rx="9" fill="#063b3a"/><path d="M10 17.5 L15 22.5 L24 12" fill="none" stroke="#16c2b0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="brand">ClearDeed</div>
+    </div>
+    <div class="hero">
+      <h3>Title, <span>cleared</span> in record time.</h3>
+      <div class="badge" aria-hidden="true"><div><b>4</b>DAY<br>TITLE</div></div>
+      <p>Digital records search, a dedicated examiner on your file, and your policy delivered straight to your attorney.</p>
+    </div>
+    <div class="terms">
+      <div class="term"><div class="tlab">Express turnaround</div><div class="tval">4 days</div><div class="tsub">business days, search through issued policy</div></div>
+      <div class="term"><div class="tlab">Total cost</div><div class="tval">$2,900</div><div class="tsub">search, rush examination &amp; owner's policy</div></div>
+    </div>
+    <div class="fine">ClearDeed Express Title Agency, Inc. Express turnaround begins on receipt of the attorney-approved contract of sale. Rush fee is non-refundable.</div>
+  </div>
+</template>
+
+<script>
+(function(){
+  document.documentElement.lang = "en";
+  const files = [
+    {id:"hearth", name:"Hearthside_Community_Lending.pdf", label:"Hearthside Community Lending", size:"412 KB"},
+    {id:"swift",  name:"SwiftPath_Mortgage.pdf",           label:"SwiftPath Mortgage",           size:"388 KB"},
+    {id:"corner", name:"Cornerstone_Title_Abstract.pdf",   label:"Cornerstone Title and Abstract", size:"296 KB"},
+    {id:"clear",  name:"ClearDeed_Express_Title.pdf",      label:"ClearDeed Express Title",      size:"341 KB"}
+  ];
+  const win = document.getElementById("window");
+  const atts = document.getElementById("atts");
+  const viewer = document.getElementById("viewer");
+  const vbox = document.getElementById("vbox");
+  const vbody = document.getElementById("vbody");
+  const vtitle = document.getElementById("vtitle");
+  const vtabs = document.getElementById("vtabs");
+  const closeBtn = document.getElementById("close");
+  const live = document.getElementById("live");
+  const seen = new Set();
+  let current = null, opener = null;
+
+  function attLabel(f){
+    return "Open " + f.label + ", PDF attachment, " + f.size + (seen.has(f.id) ? ", opened before" : "");
+  }
+
+  files.forEach(f => {
+    const li = document.createElement("li");
+    li.style.listStyle = "none";
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "att"; b.id = "att-" + f.id; b.dataset.open = f.id;
+    b.setAttribute("aria-haspopup", "dialog");
+    b.innerHTML = '<span class="pdf" aria-hidden="true">PDF</span><span><span class="fn"></span><br><span class="sz"></span> <span class="seen" hidden>· Opened</span></span>';
+    b.querySelector(".fn").textContent = f.name;
+    b.querySelector(".sz").textContent = f.size;
+    b.setAttribute("aria-label", attLabel(f));
+    li.appendChild(b);
+    atts.appendChild(li);
+
+    const t = document.createElement("button");
+    t.type = "button"; t.className = "vtab"; t.dataset.open = f.id;
+    t.textContent = f.label;
+    vtabs.appendChild(t);
+  });
+
+  function open(id){
+    const f = files.find(x => x.id === id); if(!f) return;
+    const switching = !!current;
+    if(!switching) opener = document.activeElement;
+    current = id;
+    vbody.innerHTML = "";
+    vbody.appendChild(document.getElementById("t-" + id).content.cloneNode(true));
+    vbody.scrollTop = 0;
+    vtitle.textContent = f.name;
+    vbox.setAttribute("aria-label", f.label + " attachment");
+    vbox.removeAttribute("aria-labelledby");
+    vtabs.querySelectorAll(".vtab").forEach(t => t.setAttribute("aria-pressed", t.dataset.open === id ? "true" : "false"));
+    atts.querySelectorAll(".att").forEach(a => a.classList.toggle("on", a.dataset.open === id));
+    seen.add(id);
+    const btn = document.getElementById("att-" + id);
+    btn.querySelector(".seen").hidden = false;
+    btn.setAttribute("aria-label", attLabel(f));
+    viewer.hidden = false;
+    win.inert = true; win.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "hidden";
+    if(switching){
+      live.textContent = "";
+      setTimeout(() => { live.textContent = "Now showing " + f.label + "."; }, 50);
+    } else {
+      closeBtn.focus();
+    }
+  }
+  function close(){
+    viewer.hidden = true; current = null; vbody.innerHTML = "";
+    win.inert = false; win.removeAttribute("aria-hidden");
+    document.body.style.overflow = "";
+    atts.querySelectorAll(".att").forEach(a => a.classList.remove("on"));
+    live.textContent = "Attachment closed.";
+    if(opener && opener.focus) opener.focus();
+  }
+
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-open]");
+    if(b){ e.preventDefault(); open(b.dataset.open); }
+  });
+  closeBtn.addEventListener("click", close);
+  viewer.addEventListener("click", e => { if(e.target === viewer) close(); });
+  document.addEventListener("keydown", e => {
+    if(!current) return;
+    if(e.key === "Escape"){ e.preventDefault(); close(); return; }
+    if(e.key === "Tab"){
+      const f = [...vbox.querySelectorAll('button, [tabindex="0"]')].filter(el => !el.hidden && el.offsetParent !== null);
+      if(!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      else if(!vbox.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    }
+  });
+})();
+</script>
+
+</body></html>

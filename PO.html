@@ -1,0 +1,389 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Post Office</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a faithful replica of the Excel sheet — fixed column grid (A–J), no gridlines, 150% zoom on wide screens.
+   Single deliberate light look (it mirrors the workbook), so every color is set explicitly. */
+:root {
+  --paper: #ffffff;
+  --ink: #000000;
+  --xl-blue: #0000ff;        /* Excel indexed color 12 */
+  --title-fill: #ffcc99;     /* indexed 47 */
+  --input-fill: #ffffcc;     /* indexed 26 */
+  --warn-fill: #ff0000;      /* indexed 10 */
+  --warn-ink: #ffffff;
+  --note-fill: #ffffe1;
+  --select: #217346;         /* Excel's active-cell green */
+  --note-mark: #e00000;
+  --muted: #b3b3b3;
+  --f-cell: Arial, "Liberation Sans", Helvetica, sans-serif;
+  --f-geneva: Geneva, Verdana, "DejaVu Sans", sans-serif;
+  --f-times: "Times New Roman", Times, "Liberation Serif", serif;
+  --f-note: Tahoma, Verdana, sans-serif;
+  color-scheme: light;
+}
+html, body { background: var(--paper); color: var(--ink); }
+body {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.scroller { overflow-x: auto; overflow-y: visible; max-width: 100%; }
+.sheet {
+  --z: 1;
+  zoom: var(--z);
+  display: grid;
+  /* A..J column widths (Excel width units → px) */
+  grid-template-columns: 16px 125px 79px 58px 73px 76px 76px 67px 65px 81px;
+  grid-template-rows: 29px 29px 7px 19px 19px 19px 26px 17px 19px 19px 27px 17px 29px 19px 19px 25px 17px 16px 16px 16px 16px 16px;
+  width: max-content;
+  font-family: var(--f-cell);
+  font-size: 12px;
+  line-height: 1;
+  padding-bottom: 80px; /* room for notes */
+}
+@media (min-width: 820px) { .sheet { --z: 1.25; } }
+@media (min-width: 1000px) { .sheet { --z: 1.5; } }
+
+.c {
+  display: flex; align-items: flex-end;
+  padding: 0 2px 2px; white-space: nowrap; min-width: 0;
+  position: relative;
+}
+.l { justify-content: flex-start; }
+.r { justify-content: flex-end; }
+.m { justify-content: center; }
+.vc { align-items: center; padding-bottom: 0; }
+.b { font-weight: 700; }
+.i { font-style: italic; }
+.blue { color: var(--xl-blue); }
+.f10 { font-size: 13.33px; }
+.sec { font-size: 13.33px; font-weight: 700; color: var(--xl-blue); }
+sub { font-size: 0.78em; line-height: 0; vertical-align: -0.28em; }
+.tabnum { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+
+/* Title & status */
+.title {
+  background: var(--title-fill); border: 2px solid var(--ink);
+  font-size: 16px; font-weight: 700; color: var(--xl-blue);
+}
+.status { font-family: var(--f-geneva); font-size: 13.33px; border-top: 2px solid var(--ink); }
+.status.bad { background: var(--warn-fill); color: var(--warn-ink); font-weight: 700; font-style: italic; }
+
+/* Input cells */
+.in { background: var(--input-fill); padding: 0; align-items: stretch; }
+.bt { border-top: 1px solid var(--ink); }
+.bb { border-bottom: 1px solid var(--ink); }
+.bl { border-left: 1px solid var(--ink); }
+.br { border-right: 1px solid var(--ink); }
+.in input {
+  all: unset; box-sizing: border-box; width: 100%; height: 100%;
+  font: 700 12px/1 var(--f-cell); color: var(--ink); text-align: center;
+  padding: 0 2px; cursor: cell;
+}
+.in:focus-within { outline: 2px solid var(--select); outline-offset: -1px; z-index: 2; }
+.in input::selection { background: #b5d5ff; }
+
+/* Reset button */
+#reset {
+  width: 100%; cursor: pointer;
+  font: 700 15px/1 var(--f-cell); color: #fff; background: var(--xl-blue);
+  border: 2px solid var(--ink); border-radius: 4px; box-shadow: 2px 2px 0 var(--ink);
+}
+#reset:hover { background: #0000c0; }
+#reset:active { transform: translate(2px, 2px); box-shadow: none; }
+#reset:focus-visible { outline: 3px solid var(--select); outline-offset: 2px; }
+
+/* Class table header */
+.th { border-bottom: 2px solid var(--ink); justify-content: center; font-style: italic; }
+.th.times { font-family: var(--f-times); font-style: normal; }
+.hdrline { border-bottom: 2px solid var(--ink); }
+
+/* Cell notes (Excel comments) */
+.has-note { cursor: default; }
+.has-note::after {
+  content: ""; position: absolute; top: 0; right: 0;
+  border-style: solid; border-width: 0 6px 6px 0;
+  border-color: transparent var(--note-mark) transparent transparent;
+}
+.note {
+  position: absolute; left: calc(100% + 10px); top: -4px; z-index: 5;
+  width: 150px; padding: 4px 5px; white-space: normal;
+  background: var(--note-fill); color: var(--ink); border: 1px solid var(--ink);
+  font: 13px/1.2 var(--f-note); box-shadow: 2px 2px 3px rgba(0,0,0,.25);
+  display: none;
+}
+.note.small { font-size: 11px; font-weight: 700; }
+.has-note:hover .note, .has-note:focus .note, .has-note.open .note { display: block; }
+.has-note:focus { outline: 2px solid var(--select); outline-offset: -1px; }
+</style>
+
+<div class="scroller">
+<div class="sheet" id="sheet">
+
+  <!-- Row 1-2 -->
+  <div class="c title m vc" style="grid-row:1;grid-column:2/10">Post Office</div>
+  <div class="c status m vc" id="B2" style="grid-row:2;grid-column:2/10">Model is OK</div>
+
+  <!-- Basic inputs -->
+  <div class="c sec l" style="grid-row:4;grid-column:2/7">Basic Inputs:</div>
+  <div class="c r" style="grid-row:4;grid-column:2/8">Number of Servers, c =</div>
+  <div class="c in bt bl br" style="grid-row:4;grid-column:8"><input id="H4" value="1" inputmode="decimal" aria-label="Number of servers, c"></div>
+  <div class="c r" style="grid-row:5;grid-column:2/8"><span>Arrival Rate, R<sub>i</sub> =</span></div>
+  <div class="c in bl br" style="grid-row:5;grid-column:8"><input id="H5" value="34" inputmode="decimal" aria-label="Arrival rate, Ri"></div>
+  <div class="c r" style="grid-row:6;grid-column:2/8"><span>Service Rate Capacity of each server, R<sub>p</sub> =</span></div>
+  <div class="c in bl br bb" style="grid-row:6;grid-column:8"><input id="H6" value="12" inputmode="decimal" aria-label="Service rate capacity of each server, Rp"></div>
+  <div class="c" style="grid-row:4/7;grid-column:3;padding:3px 4px 3px 0;align-items:stretch;z-index:1"><button id="reset" type="button" title="Restore all inputs to their original values">↺ Reset</button></div>
+
+  <!-- Waiting line -->
+  <div class="c sec l" style="grid-row:7;grid-column:2/7">The Waiting Line:</div>
+  <div class="c r" style="grid-row:7;grid-column:2/8"><span>Average Number Waiting in Queue (I<sub>i</sub>) =</span></div>
+  <div class="c l b tabnum" id="H7" style="grid-row:7;grid-column:8"></div>
+  <div class="c r" style="grid-row:8;grid-column:2/8"><span>Average Waiting Time (T<sub>i</sub>) =</span></div>
+  <div class="c l b tabnum" style="grid-row:8;grid-column:8"><span id="H8"></span></div>
+
+  <div class="c r" style="grid-row:9;grid-column:2/5"><span><b class="blue">Q</b>: Probability of more than</span></div>
+  <div class="c in bt bb bl br" style="grid-row:9;grid-column:5"><input id="E9" value="20" inputmode="decimal" aria-label="Number of customers waiting"></div>
+  <div class="c l f10" style="grid-row:9;grid-column:6/8">customers waiting</div>
+  <div class="c l b" id="H9" style="grid-row:9;grid-column:8/11;white-space:pre"></div>
+
+  <div class="c r" style="grid-row:10;grid-column:2/5"><span><b class="blue">T</b>: Probability of more than</span></div>
+  <div class="c in bt bb bl br" style="grid-row:10;grid-column:5"><input id="E10" value="0.5" inputmode="decimal" aria-label="Time units waiting"></div>
+  <div class="c m" style="grid-row:10;grid-column:6/8;font-family:var(--f-geneva);font-size:13.33px">time-units waiting</div>
+  <div class="c l b" id="H10" style="grid-row:10;grid-column:8/11;white-space:pre"></div>
+
+  <!-- Service -->
+  <div class="c sec l" style="grid-row:11;grid-column:2/7">Service:</div>
+  <div class="c r" style="grid-row:11;grid-column:2/8">Average Utilization of Servers =</div>
+  <div class="c l b tabnum" id="H11" style="grid-row:11;grid-column:8"></div>
+  <div class="c r" style="grid-row:12;grid-column:2/8"><span>Average Number of Customers Receiving Service (I<sub>p</sub>) =</span></div>
+  <div class="c l b tabnum" id="H12" style="grid-row:12;grid-column:8"></div>
+
+  <!-- Total system -->
+  <div class="c sec l" style="grid-row:13;grid-column:2/10">The Total System (waiting line plus customers being served):</div>
+  <div class="c r" style="grid-row:14;grid-column:2/8">Average Number in the System (I) =</div>
+  <div class="c l b tabnum" id="H14" style="grid-row:14;grid-column:8"></div>
+  <div class="c r" style="grid-row:15;grid-column:2/8">Average Time in System (T) =</div>
+  <div class="c l b tabnum" id="H15" style="grid-row:15;grid-column:8"></div>
+
+  <!-- Multiple classes -->
+  <div class="c sec l" style="grid-row:16;grid-column:2/10">An Option: Multiple Classes of Customers</div>
+  <div class="c th" style="grid-row:17;grid-column:4">Class</div>
+  <div class="c th" style="grid-row:17;grid-column:5">fraction</div>
+  <div class="c th times muted" style="grid-row:17;grid-column:6">(Ignore)</div>
+  <div class="c th" style="grid-row:17;grid-column:7">I<span style="font-size:.9em">i</span>&nbsp;(k)</div>
+  <div class="c th" style="grid-row:17;grid-column:8">T<span style="font-size:.9em">i</span>&nbsp;(k)</div>
+
+  <div class="c r" style="grid-row:18;grid-column:2/5">highest priority = 1</div>
+  <div class="c m b tabnum" id="E18" style="grid-row:18;grid-column:5"></div>
+  <div class="c m" style="grid-row:19;grid-column:4">2</div>
+  <div class="c in bt bl br" style="grid-row:19;grid-column:5"><input id="E19" value="0" inputmode="decimal" aria-label="Fraction of class 2"></div>
+  <div class="c m" style="grid-row:20;grid-column:4">3</div>
+  <div class="c in bl br" style="grid-row:20;grid-column:5"><input id="E20" value="0" inputmode="decimal" aria-label="Fraction of class 3"></div>
+  <div class="c m" style="grid-row:21;grid-column:4">4</div>
+  <div class="c in bl br bb" style="grid-row:21;grid-column:5"><input id="E21" value="0" inputmode="decimal" aria-label="Fraction of class 4"></div>
+</div>
+</div>
+
+<script>
+(function () {
+  const sheet = document.getElementById('sheet');
+  // Build class-table result cells (F, G, H for rows 18–21)
+  for (let r = 18; r <= 21; r++) {
+    [['F', 6, 'muted'], ['G', 7, 'b'], ['H', 8, 'b']].forEach(([col, gc, cls]) => {
+      const d = document.createElement('div');
+      d.className = 'c m tabnum ' + cls;
+      d.id = col + r;
+      d.style.gridRow = r; d.style.gridColumn = gc;
+      sheet.appendChild(d);
+    });
+  }
+
+  const INPUTS = ['H4', 'H5', 'H6', 'E9', 'E10', 'E19', 'E20', 'E21'];
+  const $ = id => document.getElementById(id);
+
+  // ---- Excel-like value parsing ----
+  function parse(raw) {
+    const s = raw.trim();
+    if (s === '') return null;                         // blank
+    const pct = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?%$/i.test(s);
+    const num = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s.replace(/,/g, ''));
+    if (pct) return parseFloat(s) / 100;
+    if (num) return parseFloat(s.replace(/,/g, ''));
+    return s;                                          // text
+  }
+
+  // ---- Excel-like arithmetic with error propagation ----
+  class XErr { constructor(code) { this.code = code; } }
+  const E = code => { throw new XErr(code); };
+  function n(x) {
+    if (x instanceof XErr) throw x;
+    if (typeof x === 'string') E('#VALUE!');
+    return x == null ? 0 : x;
+  }
+  function chk(v) { if (!isFinite(v) || Number.isNaN(v)) E('#NUM!'); return v; }
+  function div(a, b) { if (b === 0) E('#DIV/0!'); return chk(a / b); }
+  function pow(a, b) {
+    if (a === 0 && b < 0) E('#DIV/0!');
+    if (a === 0 && b === 0) E('#NUM!');
+    if (a < 0 && !Number.isInteger(b)) E('#NUM!');
+    return chk(Math.pow(a, b));
+  }
+  function sqrt(x) { if (x < 0) E('#NUM!'); return Math.sqrt(x); }
+  function exp(x) { return chk(Math.exp(x)); }
+  function sum(...xs) {               // SUM ignores text and blanks, propagates errors
+    let t = 0;
+    for (const x of xs) { if (x instanceof XErr) throw x; if (typeof x === 'number') t += x; }
+    return t;
+  }
+  function round(x, d) {
+    const a = Math.abs(x), s = Math.sign(x);
+    const v = Number(Math.round(Number(Number(a.toPrecision(15)) + 'e' + d)) + 'e-' + d);
+    return s * v;
+  }
+  function numText(x) {               // number → text as Excel's & operator does
+    let v = Number(x.toPrecision(15));
+    let s = String(v);
+    if (/e/.test(s)) {
+      const [m, e] = s.split('e');
+      const ei = parseInt(e, 10);
+      s = m + 'E' + (ei < 0 ? '-' : '+') + String(Math.abs(ei)).padStart(2, '0');
+    }
+    return s;
+  }
+
+  // ---- Number formats ----
+  function general(v, w) {
+    if (v === 0) return '0';
+    for (let dec = 10; dec >= 0; dec--) {
+      let s = v.toFixed(dec);
+      if (s.includes('.')) s = s.replace(/0+$/, '').replace(/\.$/, '');
+      if (s.length <= w && Number(s) !== 0) return s;
+    }
+    for (let p = 5; p >= 0; p--) {
+      let [m, e] = v.toExponential(p).split('e');
+      if (m.includes('.')) m = m.replace(/0+$/, '').replace(/\.$/, '');
+      const ei = parseInt(e, 10);
+      const s = m + 'E' + (ei < 0 ? '-' : '+') + String(Math.abs(ei)).padStart(2, '0');
+      if (s.length <= w) return s;
+    }
+    return '#'.repeat(w);
+  }
+  const fit = (s, w) => s.length <= w ? s : '#'.repeat(w);
+  const fmt = {
+    gen: w => v => general(v, w),
+    fix: (d, w) => v => fit(v.toFixed(d), w),
+    pct: (d, w) => v => fit((v * 100).toFixed(d) + '%', w),
+    text: () => v => v,
+  };
+
+  // column character widths (Excel width units)
+  const W = { E: 9, F: 9, G: 9, H: 8 };
+
+  const cellFmt = {
+    H7: fmt.fix(3, W.H), H8: fmt.gen(W.H), H9: fmt.text(), H10: fmt.text(),
+    H11: fmt.pct(2, W.H), H12: fmt.gen(W.H), H14: fmt.fix(3, W.H), H15: fmt.gen(W.H),
+    E18: fmt.gen(W.E),
+  };
+  for (let r = 18; r <= 21; r++) {
+    cellFmt['F' + r] = fmt.gen(W.F);
+    cellFmt['G' + r] = fmt.fix(3, W.G);
+    cellFmt['H' + r] = fmt.fix(4, W.H);
+  }
+
+  function recalc() {
+    const V = {};
+    INPUTS.forEach(id => { V[id] = parse($(id).value); });
+    const calc = (id, f) => { try { V[id] = f(); } catch (e) { if (e instanceof XErr) V[id] = e; else throw e; } };
+
+    // B2 status
+    let status;
+    try {
+      const c = n(V.H4), ri = n(V.H5), rp = n(V.H6);
+      status = ri > c * rp ? 'Warning: Arrival rate exceeds service capacity. Model is not valid.' : 'Model is OK';
+    } catch (e) { status = e.code; }
+
+    calc('H11', () => div(n(V.H5), n(V.H4) * n(V.H6)));
+    calc('H8', () => {
+      const c = n(V.H4), rp = n(V.H6), u = n(V.H11);
+      return chk(div(1, c * rp) * div(pow(u, sqrt(2 * (c + 1)) - 1), 1 - u));
+    });
+    calc('H7', () => chk(n(V.H5) * n(V.H8)));
+    calc('H9', () => {
+      const u = n(V.H11), h7 = n(V.H7);
+      return ' = ' + numText(round(chk((1 - u) * h7 * pow(u, n(V.E9))), 4) * 100) + '%';
+    });
+    calc('H10', () => {
+      const u = n(V.H11), h7 = n(V.H7);
+      const x = chk(div(1 - u, u) * h7 * exp((n(V.H5) - n(V.H4) * n(V.H6)) * n(V.E10)));
+      return ' = ' + numText(round(x, 4) * 100) + '%';
+    });
+    calc('H12', () => chk(n(V.H11) * n(V.H4)));
+    calc('H14', () => chk(n(V.H7) + n(V.H4) * n(V.H11)));
+    calc('H15', () => div(n(V.H14), n(V.H5)));
+
+    calc('E18', () => 1 - sum(V.E19, V.E20, V.E21));
+    calc('F18', () => chk(1 - n(V.E18) * n(V.H11)));
+    for (let r = 19; r <= 21; r++) calc('F' + r, () => chk(n(V['F' + (r - 1)]) - n(V['E' + r]) * n(V.H11)));
+    calc('G18', () => div(n(V.H7) * n(V.E18) * (1 - n(V.H11)), n(V.F18)));
+    for (let r = 19; r <= 21; r++) calc('G' + r, () => div(n(V.H7) * n(V['E' + r]) * (1 - n(V.H11)), chk(n(V['F' + r]) * n(V['F' + (r - 1)]))));
+    for (let r = 18; r <= 21; r++) calc('H' + r, () => {
+      const g = n(V['G' + r]);
+      const e = V['E' + r];
+      if (e instanceof XErr) throw e;
+      // IF(E>0, E, 1): text compares greater than any number in Excel
+      const pick = (typeof e === 'string' || (e != null && e > 0)) ? n(e) : 1;
+      return div(g, chk(pick * n(V.H5)));
+    });
+
+    // Render
+    const b2 = $('B2');
+    b2.textContent = status;
+    b2.classList.toggle('bad', status !== 'Model is OK');
+    Object.keys(cellFmt).forEach(id => {
+      const v = V[id];
+      $(id).textContent = v instanceof XErr ? v.code : cellFmt[id](v);
+    });
+  }
+
+  // ---- Input behaviour: select on entry, Enter/arrows move like Excel, tidy display on commit ----
+  INPUTS.forEach((id, i) => {
+    const el = $(id);
+    el.addEventListener('input', recalc);
+    el.addEventListener('focus', () => setTimeout(() => el.select(), 0));
+    el.addEventListener('blur', () => {
+      const v = parse(el.value);
+      if (typeof v === 'number') {
+        const pct = /%\s*$/.test(el.value);
+        el.value = pct ? general(v * 100, 11) + '%' : general(v, 11);
+      }
+    });
+    el.addEventListener('keydown', ev => {
+      let to = null;
+      if (ev.key === 'Enter' || ev.key === 'ArrowDown') to = ev.shiftKey && ev.key === 'Enter' ? i - 1 : i + 1;
+      else if (ev.key === 'ArrowUp') to = i - 1;
+      else if (ev.key === 'Escape') { el.blur(); return; }
+      if (to !== null) {
+        ev.preventDefault();
+        $(INPUTS[(to + INPUTS.length) % INPUTS.length]).focus();
+      }
+    });
+  });
+
+  // Reset: restore every input to the value written in the page's markup
+  $('reset').addEventListener('click', () => {
+    INPUTS.forEach(id => { $(id).value = $(id).defaultValue; });
+    recalc();
+  });
+
+  // Notes: tap toggles on touch devices
+  document.querySelectorAll('.has-note').forEach(n => {
+    n.addEventListener('click', () => n.classList.toggle('open'));
+  });
+
+  recalc();
+})();
+</script>
+
+</body></html>

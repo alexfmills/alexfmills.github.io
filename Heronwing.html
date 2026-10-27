@@ -1,0 +1,526 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Airport Check-in</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: terminal wayfinding sign as header, fixed setup + run controls, the check-in hall as a wide band, two charts beneath. */
+:root {
+  --bg: #EDEFEE; --panel: #FFFFFF; --ink: #16191D; --muted: #5B636B; --line: #D3D8DC;
+  --sign: #17191C; --sign-text: #F4B400;
+  --cust: #2F5F94; --serve: #D08F00; --gone: #9AA3AB; --officer: #24364D; --metal: #8A949C;
+  --floor: #E2E5E3; --floor2: #D3D8D5; --mean: #C2410C; --point: #2F5F94; --util: #8A5A00; --brand: #0F5C63; --brand-hi: #9FE0D6;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121417; --panel: #1B1E22; --ink: #E8EAEC; --muted: #9BA3AA; --line: #30353B;
+  --sign: #0A0B0D; --sign-text: #F4B400;
+  --cust: #6FA3DA; --serve: #F2B33A; --gone: #5E666D; --officer: #8FA8C7; --metal: #6F7A83;
+  --floor: #1D2125; --floor2: #272C31; --mean: #F08A4B; --point: #6FA3DA; --util: #F2B33A; --brand: #13707A; --brand-hi: #A8E8DE; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121417; --panel: #1B1E22; --ink: #E8EAEC; --muted: #9BA3AA; --line: #30353B;
+  --sign: #0A0B0D; --sign-text: #F4B400;
+  --cust: #6FA3DA; --serve: #F2B33A; --gone: #5E666D; --officer: #8FA8C7; --metal: #6F7A83;
+  --floor: #1D2125; --floor2: #272C31; --mean: #F08A4B; --point: #6FA3DA; --util: #F2B33A; --brand: #13707A; --brand-hi: #A8E8DE; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 20px 32px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 16px; }
+header.sign { background: var(--sign); color: var(--sign-text); border-radius: 6px; padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+header.sign h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.01em; text-wrap: balance; }
+header.sign .tag { font-family: var(--f-num); font-size: 0.8rem; color: #F4F4F4; opacity: .8; letter-spacing: .06em; text-transform: uppercase; }
+
+.controls { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px;
+  display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; }
+.head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.go { display: grid; gap: 6px; justify-items: start; }
+.grp { display: grid; gap: 6px; min-width: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; width: fit-content; max-width: 100%; flex-wrap: wrap; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { padding: 6px 12px; font-size: 0.9rem; cursor: pointer; border-right: 1px solid var(--line); }
+.seg label:last-of-type { border-right: 0; }
+.seg input:checked + label { background: var(--ink); color: var(--panel); }
+.seg input:focus-visible + label { outline: 2px solid var(--serve); outline-offset: -2px; }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: 600 0.92rem var(--f-ui); padding: 8px 14px; border-radius: 5px; cursor: pointer;
+  border: 1px solid var(--ink); background: var(--panel); color: var(--ink); }
+button.big { font: 800 1.35rem var(--f-ui); letter-spacing: .04em; text-transform: uppercase;
+  padding: 16px 44px; min-width: 200px; border: 0; border-radius: 6px;
+  background: var(--sign-text); color: #17191C; box-shadow: 0 3px 0 #9A6C00; }
+button.big:hover { filter: brightness(1.06); }
+button.big:active { transform: translateY(2px); box-shadow: 0 1px 0 #9A6C00; }
+button.big.on { background: var(--ink); color: var(--panel); box-shadow: none; font-size: 1.1rem; }
+@media (prefers-reduced-motion: reduce) { button.big:active { transform: none; } }
+select { font: 600 0.92rem var(--f-ui); padding: 7px 8px; border-radius: 5px; border: 1px solid var(--ink);
+  background: var(--panel); color: var(--ink); }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--serve); outline-offset: 2px; }
+.status { font-size: 0.85rem; color: var(--muted); max-width: 32ch; }
+
+.hall { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+#scene { display: block; width: 100%; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); border-top: 1px solid var(--line); }
+.stat { padding: 10px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: -1px; display: grid; gap: 2px; }
+.stat span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.stat b { font-family: var(--f-num); font-weight: 500; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.stat.key b { color: var(--mean); }
+.stat.keyu b { color: var(--util); }
+
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.chartbox { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px 10px; display: grid; gap: 8px; min-width: 0; }
+.charthead { display: grid; gap: 6px; }
+.charthead h2 { margin: 0; font-size: 1rem; font-weight: 700; }
+.legend { display: flex; gap: 16px; font-size: 0.85rem; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; vertical-align: middle; margin-right: 6px; }
+.legend .pt { width: 7px; height: 7px; background: var(--point); }
+.legend .ln { width: 18px; height: 3px; background: var(--mean); }
+.legend .lu { width: 18px; height: 3px; background: var(--util); }
+.chartbox canvas { display: block; width: 100%; height: 270px; }
+.note { font-size: 0.82rem; color: var(--muted); margin: 0; max-width: 70ch; }
+</style>
+
+<div class="wrap">
+  <header class="sign">
+    <h1>Airport Check-in</h1>
+  </header>
+
+  <section class="controls" aria-label="Simulation controls">
+    <div class="go">
+      <button class="big" id="start">Start</button>
+      <div class="status" id="status">The first 5,000 minutes are already simulated.</div>
+    </div>
+    <div class="grp">
+      <span class="head">Simulation speed</span>
+      <div class="seg" role="radiogroup" aria-label="Simulation speed">
+        <input type="radio" name="spd" id="spd1" value="1" checked><label for="spd1">Slow</label>
+        <input type="radio" name="spd" id="spd2" value="4"><label for="spd2">Medium</label>
+        <input type="radio" name="spd" id="spd3" value="15"><label for="spd3">Fast</label>
+        <input type="radio" name="spd" id="spd4" value="60"><label for="spd4">Very fast</label>
+      </div>
+    </div>
+    <div class="grp">
+      <span class="head">Run instantly</span>
+      <div class="btns">
+        <select id="jumpLen" aria-label="Minutes to run instantly">
+          <option value="200">200 min</option>
+          <option value="500" selected>500 min</option>
+          <option value="1000">1,000 min</option>
+          <option value="5000">5,000 min</option>
+        </select>
+        <button id="jump">Jump ahead</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="hall" aria-label="Check-in animation">
+    <canvas id="scene" aria-label="Passengers walk in from the left, wait in one line, and go to whichever of the two open check-in desks frees up first. Desk 3 is closed."></canvas>
+    <div class="stats">
+      <div class="stat"><span>Sim clock (min:sec)</span><b id="sClock">0:00</b></div>
+      <div class="stat"><span>In line now</span><b id="sQ">0</b></div>
+      <div class="stat"><span>Agents busy</span><b id="sBusy">0 of 2</b></div>
+      <div class="stat"><span>Checked in</span><b id="sN">0</b></div>
+      <div class="stat key"><span>Mean wait (min)</span><b id="sMean">–</b></div>
+      <div class="stat keyu"><span>Mean utilization</span><b id="sUtil">–</b></div>
+    </div>
+  </section>
+
+  <div class="charts">
+    <section class="chartbox" aria-label="Waiting time chart">
+      <div class="charthead">
+        <h2>Wait in line</h2>
+        <div class="legend"><span><i class="pt"></i>Each passenger's wait</span><span><i class="ln"></i>Mean wait</span></div>
+      </div>
+      <canvas id="chart"></canvas>
+    </section>
+    <section class="chartbox" aria-label="Utilization chart">
+      <div class="charthead">
+        <h2>Agent utilization</h2>
+        <div class="legend"><span><i class="lu"></i>Mean utilization</span></div>
+      </div>
+      <canvas id="uchart"></canvas>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+
+  // ---------- fixed model (time in minutes) ----------
+  const LAM = 0.9;          // arrivals per minute
+  const MEAN_SVC = 2.0;     // mean check-in time per passenger, minutes
+  const BW = 5;             // utilization window, minutes
+  // Seeded generator so the opening warm-up is identical on every load.
+  function mulberry32(a) {
+    return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let r = Math.imul(a ^ a >>> 15, 1 | a);
+      r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r; return ((r ^ r >>> 14) >>> 0) / 4294967296; };
+  }
+  let rnd = Math.random;
+  const expo = mean => -Math.log(1 - rnd()) * mean;
+
+  // ---------- scene geometry ----------
+  const LW = 1000, LH = 330;
+  const LANE_Y = 285, EXIT_Y = 312, AGENT_Y = 208, WALL_Y = 222;
+  const HEAD_X = 470, GAP = 40, MIN_X = 40, ENTRY_X = -30, EXIT_X = 1040;
+  const DESK_X = [640, 790, 940];   // desk 3 (940) is closed
+  const MAX_J = Math.floor((HEAD_X - MIN_X) / GAP);
+  const WALK = 0.6;                 // sim-minutes to walk in from the entrance
+  const V = 1000;                   // walking speed, scene units per sim-minute
+
+  let t, lastArr, pending, queue, servers, leaving, waits, sumW, served, maxW, busyB, busyTotal, nextId;
+  let running = false;
+
+  function reset() {
+    t = 0; lastArr = 0; pending = []; queue = []; leaving = [];
+    servers = [0, 1].map(i => ({ i, x: DESK_X[i], cust: null, freeSince: -i * 1e-6 }));
+    waits = []; sumW = 0; served = 0; maxW = 0; busyB = []; busyTotal = 0; nextId = 0;
+    running = false;
+  }
+  function syncButtons() {
+    const b = $('start');
+    b.textContent = running ? 'Pause' : 'Start';
+    b.classList.toggle('on', running);
+    $('status').textContent = running ? 'Running.' : 'Paused at ' + Math.floor(t).toLocaleString() + ' minutes. Press Start to watch it continue.';
+  }
+  function toggle() { running = !running; syncButtons(); }
+  function jump() {
+    advanceTo(t + +$('jumpLen').value);
+    snap();
+  }
+  function snap() {
+    servers.forEach(s => { if (s.cust) { s.cust.x = s.x; s.cust.y = LANE_Y; } });
+    queue.forEach((c, k) => { c.x = slotX(k); c.y = LANE_Y; });
+    leaving = [];
+    if (!running) syncButtons();
+  }
+
+  const busyCount = () => servers.reduce((n, s) => n + (s.cust ? 1 : 0), 0);
+  function accrue(t0, t1, k) {
+    if (t1 <= t0) return;
+    busyTotal += k * (t1 - t0);
+    if (!k) return;
+    while (t0 < t1) {
+      const b = Math.floor(t0 / BW), end = Math.min(t1, (b + 1) * BW);
+      busyB[b] = (busyB[b] || 0) + k * (end - t0); t0 = end;
+    }
+  }
+  function ensureArrivals(T) {
+    while (lastArr <= T + WALK) {
+      lastArr += expo(1 / LAM);
+      pending.push({ id: nextId++, arr: lastArr, x: ENTRY_X, y: LANE_Y, phase: rnd() * 6,
+        bag: rnd() < 0.6, shade: rnd() * 0.25, moving: true });
+    }
+  }
+  function startService(c, s) {
+    c.start = t; c.dep = t + expo(MEAN_SVC); c.state = 'service'; s.cust = c;
+    const w = c.start - c.arr; sumW += w; maxW = Math.max(maxW, w);
+    waits.push({ t: c.start, w, mean: sumW / (waits.length + 1) });
+  }
+  function advanceTo(T) {
+    for (;;) {
+      ensureArrivals(T);
+      const na = pending.length ? pending[0].arr : Infinity;
+      let nd = Infinity, sd = null;
+      servers.forEach(s => { if (s.cust && s.cust.dep < nd) { nd = s.cust.dep; sd = s; } });
+      const te = Math.min(na, nd);
+      if (te > T) break;
+      accrue(t, te, busyCount()); t = te;
+      if (nd <= na) {
+        const c = sd.cust; sd.cust = null; sd.freeSince = t; c.state = 'leaving'; c.bag = false; c.pass = true; leaving.push(c); served++;
+        if (queue.length) startService(queue.shift(), sd);
+      } else {
+        const c = pending.shift(); c.state = 'queue';
+        const free = servers.filter(s => !s.cust).sort((a, b) => a.freeSince - b.freeSince);
+        if (free.length) startService(c, free[0]); else queue.push(c);
+      }
+    }
+    accrue(t, T, busyCount()); t = T;
+  }
+
+  const slotX = j => Math.max(HEAD_X - GAP * j, MIN_X);
+  function stepToward(c, tx, ty, dt) {
+    const dx = tx - c.x, dy = ty - c.y, d = Math.hypot(dx, dy), s = V * dt;
+    let moved;
+    if (d <= s) { c.x = tx; c.y = ty; moved = d; } else { c.x += dx / d * s; c.y += dy / d * s; moved = s; }
+    c.moving = moved > 1e-6; c.phase += moved * 0.09;
+  }
+  function updatePositions(dt) {
+    servers.forEach(s => { if (s.cust) stepToward(s.cust, s.x, LANE_Y, dt); });
+    queue.forEach((c, k) => stepToward(c, slotX(k), LANE_Y, dt));
+    pending.forEach((c, i) => {
+      const p = Math.min(1, Math.max(0, (t - (c.arr - WALK)) / WALK));
+      const nx = ENTRY_X + (slotX(queue.length + i) - ENTRY_X) * p;
+      c.phase += Math.abs(nx - c.x) * 0.09; c.moving = nx !== c.x; c.x = nx; c.y = LANE_Y;
+    });
+    leaving.forEach(c => stepToward(c, EXIT_X + 20, EXIT_Y, dt));
+    leaving = leaving.filter(c => c.x < EXIT_X);
+  }
+
+  // ---------- theme colors ----------
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    ['ink','muted','line','panel','sign','sign-text','cust','serve','gone','officer','metal','floor','floor2','mean','point','util','brand','brand-hi']
+      .forEach(k => C[k] = cs.getPropertyValue('--' + k).trim());
+  }
+  readColors();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ---------- canvas sizing ----------
+  const scene = $('scene'), sctx = scene.getContext('2d');
+  const chart = $('chart'), cctx = chart.getContext('2d');
+  const uchart = $('uchart'), uctx = uchart.getContext('2d');
+  function fit() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = scene.clientWidth, h = Math.round(w * LH / LW);
+    scene.style.height = h + 'px'; scene.width = w * dpr; scene.height = h * dpr;
+    [chart, uchart].forEach(cv => { cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr; });
+  }
+  [scene, chart, uchart].forEach(el => new ResizeObserver(fit).observe(el)); fit();
+
+  // ---------- scene drawing ----------
+  function person(g, c, color) {
+    const x = c.x, y = c.y, sw = c.moving ? Math.sin(c.phase) * 0.45 : 0;
+    g.lineCap = 'round';
+    if (c.bag) bag(g, x - 30, y); // rolling suitcase trailing behind
+    g.strokeStyle = color; g.lineWidth = 6;
+    const hip = y - 34, L = 32;
+    [sw, -sw].forEach(a => { g.beginPath(); g.moveTo(x, hip); g.lineTo(x + Math.sin(a) * L, hip + Math.cos(a) * L); g.stroke(); });
+    g.lineWidth = 5;
+    [-sw, sw].forEach(a => { g.beginPath(); g.moveTo(x, y - 64); g.lineTo(x + Math.sin(a) * 24, y - 64 + Math.cos(a) * 24); g.stroke(); });
+    g.fillStyle = color; g.beginPath(); g.roundRect(x - 9, y - 70, 18, 40, 7); g.fill();
+    g.beginPath(); g.arc(x, y - 81, 8.5, 0, 7); g.fill();
+    g.globalAlpha = c.shade; g.fillStyle = C.ink; g.beginPath(); g.roundRect(x - 9, y - 70, 18, 40, 7); g.fill(); g.globalAlpha = 1;
+    if (c.pass) pass(g, x + Math.sin(-sw) * 24, y - 64 + Math.cos(-sw) * 24);
+  }
+  function bag(g, bx, by) { // bx = left edge, by = floor line under the wheels
+    g.fillStyle = C.metal; g.fillRect(bx, by - 34, 17, 28);
+    g.strokeStyle = C.metal; g.lineWidth = 2; g.beginPath(); g.moveTo(bx + 16, by - 34); g.lineTo(bx + 24, by - 50); g.stroke();
+    g.fillStyle = C.ink; g.beginPath(); g.arc(bx + 3, by - 4, 2.2, 0, 7); g.arc(bx + 14, by - 4, 2.2, 0, 7); g.fill();
+  }
+  function pass(g, hx, hy) { // boarding pass held at the hand
+    g.fillStyle = '#FFFFFF'; g.fillRect(hx - 2, hy - 15, 12, 17);
+    g.fillStyle = C.brand; g.fillRect(hx - 2, hy - 15, 12, 5);
+    g.strokeStyle = C.ink; g.globalAlpha = 0.5; g.lineWidth = 1; g.strokeRect(hx - 2, hy - 15, 12, 17); g.globalAlpha = 1;
+  }
+  const ease = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
+  const lerp = (a, b, u) => a + (b - a) * u;
+  const svcP = c => Math.min(1, (t - c.start) / Math.max(1e-9, c.dep - c.start));
+  const SCALE_DX = -74, SCALE_Y = 228;   // bag scale beside each open counter
+  function drawScene() {
+    const g = sctx, s = scene.width / LW;
+    g.setTransform(s, 0, 0, s, 0, 0);
+    g.fillStyle = C.panel; g.fillRect(0, 0, LW, LH);
+    // back wall behind the desks, then floor
+    g.fillStyle = C.floor2; g.globalAlpha = 0.45; g.fillRect(560, 86, LW - 560, WALL_Y - 86); g.globalAlpha = 1;
+    g.fillStyle = C.floor; g.fillRect(0, WALL_Y, LW, LH - WALL_Y);
+    g.strokeStyle = C.floor2; g.lineWidth = 1;
+    for (let x = 0; x < LW + 60; x += 50) { g.beginPath(); g.moveTo(x, WALL_Y); g.lineTo(x - 36, LH); g.stroke(); }
+    // labels
+    g.fillStyle = C.muted; g.font = '600 13px Archivo, sans-serif'; g.textBaseline = 'alphabetic';
+    g.textAlign = 'left'; g.fillText('ENTRANCE  →', 12, 26);
+    g.textAlign = 'right'; g.fillText('TO SECURITY  →', LW - 12, 112);
+    // airline banner over the desks (fictional carrier)
+    g.fillStyle = C.brand; g.beginPath(); g.roundRect(586, 6, 408, 36, 4); g.fill();
+    g.fillStyle = C['brand-hi']; g.beginPath(); // swept wing mark
+    g.moveTo(602, 34); g.quadraticCurveTo(612, 14, 642, 11); g.lineTo(630, 21); g.quadraticCurveTo(620, 26, 602, 34); g.fill();
+    g.globalAlpha = 0.6; g.beginPath();
+    g.moveTo(612, 34); g.quadraticCurveTo(624, 22, 648, 20); g.lineTo(638, 27); g.quadraticCurveTo(628, 30, 612, 34); g.fill(); g.globalAlpha = 1;
+    g.fillStyle = '#FFFFFF'; g.font = '800 18px Archivo, sans-serif'; g.textAlign = 'left';
+    if ('letterSpacing' in g) g.letterSpacing = '3px';
+    g.fillText('HERONWING', 656, 31);
+    g.fillStyle = C['brand-hi']; g.font = '600 12px Archivo, sans-serif'; g.textAlign = 'right';
+    if ('letterSpacing' in g) g.letterSpacing = '2px';
+    g.fillText('AIRLINES · CHECK-IN', 980, 29);
+    if ('letterSpacing' in g) g.letterSpacing = '0px';
+
+    // desks: overhead sign, agent, counter
+    DESK_X.forEach((x, i) => {
+      const open = i < 2, srv = open ? servers[i] : null, busy = srv && srv.cust;
+      g.fillStyle = C.sign; g.beginPath(); g.roundRect(x - 54, 50, 108, 30, 4); g.fill();
+      g.textAlign = 'center'; g.font = '800 15px Archivo, sans-serif';
+      g.fillStyle = open ? C['sign-text'] : C.metal;
+      g.fillText(open ? 'DESK ' + (i + 1) : 'CLOSED', x - (open ? 7 : 0), 71);
+      if (open) { // status lamp: lit while serving
+        g.beginPath(); g.arc(x + 38, 65, 5, 0, 7);
+        if (busy) { g.fillStyle = C['sign-text']; g.fill(); }
+        else { g.strokeStyle = C['sign-text']; g.lineWidth = 1.5; g.stroke(); }
+        person(g, { x, y: AGENT_Y, phase: 0, moving: false, bag: false, shade: 0 }, C.officer);
+        const c = busy ? srv.cust : null, p = c ? svcP(c) : 0;
+        if (c && c.bag && p >= 0.5 && p < 0.85) { // bag rides the belt behind the counter
+          const u = ease((p - 0.5) / 0.3);
+          bag(g, lerp(x + SCALE_DX, x + 10, u), lerp(SCALE_Y, 206, u));
+        }
+        if (c && c.bag && p >= 0.38 && p < 0.62) { // agent reaches over for the bag
+          const u = ease((p - 0.5) / 0.3), hx = lerp(x + SCALE_DX + 24, x + 34, Math.max(0, u)), hy = lerp(SCALE_Y - 50, 156, Math.max(0, u));
+          g.strokeStyle = C.officer; g.lineWidth = 5; g.lineCap = 'round';
+          g.beginPath(); g.moveTo(x - 4, AGENT_Y - 62); g.lineTo(hx, hy); g.stroke();
+        }
+      }
+      g.fillStyle = C.ink; g.globalAlpha = open ? 1 : 0.4; g.fillRect(x - 52, 160, 104, 58); g.globalAlpha = 1;
+      if (open) { g.fillStyle = C.metal; g.fillRect(x + SCALE_DX - 6, SCALE_Y - 2, 30, 6); g.fillRect(x + SCALE_DX - 6, SCALE_Y - 2, 4, 10); }
+      g.fillStyle = C.metal; g.fillRect(x - 56, 156, 112, 6);
+      if (!open) { // closed: rope across the front
+        g.strokeStyle = C.mean; g.globalAlpha = 0.7; g.lineWidth = 3;
+        g.beginPath(); g.moveTo(x - 60, LANE_Y - 50); g.quadraticCurveTo(x, LANE_Y - 38, x + 60, LANE_Y - 50); g.stroke(); g.globalAlpha = 1;
+        g.fillStyle = C.metal;
+        [x - 60, x + 60].forEach(px => { g.fillRect(px - 2, LANE_Y - 54, 4, 50); g.fillRect(px - 8, LANE_Y - 6, 16, 4); });
+      }
+    });
+
+    // stanchions and belt behind the single line
+    const by = LANE_Y - 52;
+    g.strokeStyle = C.mean; g.globalAlpha = 0.55; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(MIN_X - 10, by); g.lineTo(HEAD_X + 20, by); g.stroke(); g.globalAlpha = 1;
+    g.fillStyle = C.metal;
+    for (let x = MIN_X - 10; x <= HEAD_X + 20; x += 88) { g.fillRect(x - 2, by - 4, 4, 48); g.fillRect(x - 8, LANE_Y - 6, 16, 4); }
+
+    // people
+    pending.forEach(c => { if (t >= c.arr - WALK) person(g, c, C.cust); });
+    queue.forEach((c, k) => { if (k <= MAX_J) person(g, c, C.cust); });
+    servers.forEach(sv => {
+      const c = sv.cust; if (!c) return;
+      const p = svcP(c);
+      person(g, { ...c, bag: false }, C.serve);
+      if (c.bag && p < 0.5) { // lift the bag from beside the passenger onto the scale
+        const u = ease((p - 0.1) / 0.28);
+        bag(g, lerp(c.x - 30, sv.x + SCALE_DX, u), lerp(c.y, SCALE_Y, u));
+      }
+      if (p >= 0.82) { // agent hands over the boarding pass
+        const u = ease((p - 0.82) / 0.16);
+        pass(g, lerp(sv.x + 6, c.x + 2, u), lerp(AGENT_Y - 52, c.y - 40, u));
+      }
+      g.fillStyle = C.line; g.fillRect(c.x - 22, LANE_Y - 104, 44, 5);
+      g.fillStyle = C.serve; g.fillRect(c.x - 22, LANE_Y - 104, 44 * p, 5);
+    });
+    leaving.forEach(c => person(g, c, C.gone));
+
+    const hidden = queue.length - (MAX_J + 1);
+    if (hidden > 0) {
+      g.fillStyle = C.mean; g.beginPath(); g.roundRect(8, 120, 150, 26, 4); g.fill();
+      g.fillStyle = C.panel; g.font = '700 13px Archivo, sans-serif'; g.textAlign = 'left';
+      g.fillText('+' + hidden + ' more in line', 18, 138);
+    }
+  }
+
+  // ---------- charts ----------
+  function nice(x) {
+    const p = Math.pow(10, Math.floor(Math.log10(x))), m = x / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+  const fmt = v => (Math.round(v * 1000) / 1000).toString();
+  function axes(cv, g, ymax, ys, ylabel, ysuffix) {
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.fillStyle = C.panel; g.fillRect(0, 0, w, h);
+    const pl = 56, pr = 14, pt = 10, pb = 40, iw = w - pl - pr, ih = h - pt - pb;
+    const xmax = Math.max(30, Math.ceil(t / 6) * 6), xs = nice(xmax / 6);
+    const X = v => pl + v / xmax * iw, Y = v => pt + ih - v / ymax * ih;
+    g.font = '12px "IBM Plex Mono", monospace'; g.lineWidth = 1;
+    g.textAlign = 'right'; g.textBaseline = 'middle';
+    for (let v = 0; v <= ymax + 1e-9; v += ys) {
+      g.strokeStyle = C.line; g.beginPath(); g.moveTo(pl, Y(v)); g.lineTo(pl + iw, Y(v)); g.stroke();
+      g.fillStyle = C.muted; g.fillText(fmt(v) + ysuffix, pl - 8, Y(v));
+    }
+    g.textAlign = 'center'; g.textBaseline = 'top';
+    for (let v = 0; v <= xmax + 1e-9; v += xs) {
+      g.strokeStyle = C.line; g.beginPath(); g.moveTo(X(v), pt + ih); g.lineTo(X(v), pt + ih + 5); g.stroke();
+      g.fillStyle = C.muted; g.fillText(fmt(v), X(v), pt + ih + 8);
+    }
+    g.strokeStyle = C.muted; g.beginPath(); g.moveTo(pl, pt); g.lineTo(pl, pt + ih); g.lineTo(pl + iw, pt + ih); g.stroke();
+    g.font = '600 12px Archivo, sans-serif'; g.fillStyle = C.muted;
+    g.fillText('Simulation time (minutes)', pl + iw / 2, h - 16);
+    g.save(); g.translate(13, pt + ih / 2); g.rotate(-Math.PI / 2); g.textBaseline = 'middle';
+    g.fillText(ylabel, 0, 0); g.restore();
+    return { X, Y, pl, iw };
+  }
+
+  function drawWaitChart() {
+    const g = cctx;
+    const top = Math.max(5, maxW * 1.1), ys = nice(top / 5), ymax = Math.max(ys * 2, Math.ceil(top / ys) * ys);
+    const { X, Y, pl, iw } = axes(chart, g, ymax, ys, 'Wait in line (minutes)', '');
+    if (!waits.length) return;
+    const n = waits.length, dense = n > 3000;
+    g.fillStyle = C.point;
+    if (!dense) {
+      for (const p of waits) g.fillRect(X(p.t) - 2, Y(p.w) - 2, 4, 4);
+    } else { // one vertical bar per pixel column spanning that column's min..max wait
+      const cols = Math.ceil(iw), lo = new Float64Array(cols + 1).fill(Infinity), hi = new Float64Array(cols + 1).fill(-Infinity);
+      for (const p of waits) {
+        const c = Math.min(cols, Math.max(0, Math.round(X(p.t) - pl)));
+        if (p.w < lo[c]) lo[c] = p.w; if (p.w > hi[c]) hi[c] = p.w;
+      }
+      g.globalAlpha = 0.55;
+      for (let c = 0; c <= cols; c++) if (hi[c] >= lo[c]) { const y1 = Y(hi[c]); g.fillRect(pl + c - 1, y1 - 1, 2, Math.max(2, Y(lo[c]) - y1 + 2)); }
+      g.globalAlpha = 1;
+    }
+    g.strokeStyle = C.mean; g.lineWidth = 2.5; g.lineJoin = 'round'; g.beginPath();
+    g.moveTo(X(waits[0].t), Y(waits[0].mean));
+    if (!dense) {
+      for (let i = 1; i < n; i++) { g.lineTo(X(waits[i].t), Y(waits[i - 1].mean)); g.lineTo(X(waits[i].t), Y(waits[i].mean)); }
+    } else {
+      const step = Math.max(1, Math.floor(n / 2000));
+      for (let i = step; i < n; i += step) g.lineTo(X(waits[i].t), Y(waits[i].mean));
+      g.lineTo(X(waits[n - 1].t), Y(waits[n - 1].mean));
+    }
+    g.lineTo(X(t), Y(waits[n - 1].mean)); g.stroke();
+  }
+
+  function drawUtilChart() {
+    const g = uctx;
+    const { X, Y } = axes(uchart, g, 100, 20, 'Utilization (%)', '%');
+    if (t <= 0) return;
+    const nb = Math.floor(t / BW);
+    const pts = []; let cum = 0;
+    const step = Math.max(1, Math.floor(nb / 2000));
+    for (let k = 0; k < nb; k++) {
+      cum += busyB[k] || 0;
+      if ((k + 1) % step === 0) pts.push([(k + 1) * BW, cum / (2 * BW * (k + 1)) * 100]);
+    }
+    pts.push([t, busyTotal / (2 * t) * 100]);
+    g.strokeStyle = C.util; g.lineWidth = 2.5; g.lineJoin = 'round';
+    if (pts.length === 1) { g.fillStyle = C.util; g.beginPath(); g.arc(X(pts[0][0]), Y(pts[0][1]), 3, 0, 7); g.fill(); return; }
+    g.beginPath(); g.moveTo(X(pts[0][0]), Y(pts[0][1]));
+    for (let i = 1; i < pts.length; i++) g.lineTo(X(pts[i][0]), Y(pts[i][1]));
+    g.stroke();
+  }
+
+  // ---------- stats & controls ----------
+  function stats() {
+    const m = Math.floor(t), s = Math.floor((t - m) * 60);
+    $('sClock').textContent = m + ':' + String(s).padStart(2, '0');
+    $('sQ').textContent = queue.length;
+    $('sBusy').textContent = busyCount() + ' of 2';
+    $('sN').textContent = served;
+    $('sMean').textContent = waits.length ? (sumW / waits.length).toFixed(2) : '–';
+    $('sUtil').textContent = t > 0 ? (busyTotal / (2 * t) * 100).toFixed(1) + '%' : '–';
+  }
+  $('start').addEventListener('click', toggle);
+  $('jump').addEventListener('click', jump);
+  const speed = () => +document.querySelector('input[name=spd]:checked').value;
+
+  // Open with a fixed 5,000-minute warm-up: the first seed (from WARM_SEED up) that leaves
+  // 2 to 8 people in line. The search is deterministic, so every load opens identically.
+  const WARM_SEED = 15, WARM_MIN = 5000;
+  for (let seed = WARM_SEED; ; seed++) {
+    rnd = mulberry32(seed); reset(); advanceTo(WARM_MIN);
+    if (queue.length >= 2 && queue.length <= 8) { break; }
+  }
+  rnd = Math.random;   // live run after the warm-up is random
+  snap();
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (running) { const prev = t; advanceTo(t + dt * speed()); updatePositions(t - prev); }
+    drawScene(); drawWaitChart(); drawUtilChart(); stats();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>
